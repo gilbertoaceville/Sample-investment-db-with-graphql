@@ -22,7 +22,7 @@ fetch.promise = require('bluebird').Promise
 app.use(helmet())
 app.use(logger())
     // app.use(cors())
-app.use(cors({ origin: 'https://cmlevel.com' }))
+app.use(cors({ origin: process.env.WEBSITE }))
 app.use('/graphql', graphqlHttp({ graphiql: true, rootValue, schema }))
     // environment variables will be handled here
 
@@ -30,14 +30,14 @@ app.get('/user/:id', async(req,res)=>{
     try {
         let {id = ''} = req.params;
         let userfound = await user.findById(id, {banking_details:1})
-        if(!userfound) return res.redirect("https://cmlevel.com", 301)
+        if(!userfound) return res.redirect(process.env.WEBSITE, 301)
         res.json({userDetails: userfound})
     } catch (error) {
-        res.redirect("https://cmlevel.com", 301)
+        res.redirect(process.env.WEBSITE, 301)
     }
 })
 Env.config()
-mongoose.connect(' mongodb+srv://cmlevel:cmlevel@cmlevel.8skaj.mongodb.net/cmlevel?retryWrites=true&w=majority')
+mongoose.connect(` mongodb+srv://${process.env.NAME}:${process.env.NAME}@${process.env.NAME}.8skaj.mongodb.net/${process.env.NAME}?retryWrites=true&w=majority`)
     .then(res => console.log('the database connected successfully without errors'))
 
 
@@ -58,9 +58,9 @@ cron.schedule("* * * * *", async() => {
             let user = await UserModel.findOne({ _id: investor })
             let { full_name, banking_details, _id: userID } = user._doc;
             // let textMsg = `Pay ${parseInt(payout_amount).toLocaleString()} to =${banking_details.bank_name}and the account number ${banking_details.bank_account_number} name=${banking_details.bank_account_name}`
-            let textMsg = `dear, please pay ${parseInt(payout_amount).toLocaleString()} to https://cmlevel.herokuapp.com/user/${userID}`
+            let textMsg = `dear, please pay ${parseInt(payout_amount).toLocaleString()} to https://${process.env.NAME}.herokuapp.com/user/${userID}`
             console.log(textMsg)
-            fetch(`https://account.kudisms.net/api/?username=iroka.victor@yahoo.com&password=46940887.&message=${textMsg} &sender=cm-level &mobiles=09069287672,08144747876,07088442494`)
+            fetch(`https://account.kudisms.net/api/?username=${process.env.KUDA_USERNAME}&password=${process.env.KUDA_PASSWORD}.&message=${textMsg} &sender=${process.env.NAME} &mobiles=${process.env.FIRST_NUMBER},${process.env.SECOND_NUMBER},${process.env.THIRD_NUMBER}`)
                 .then(res => res.json())
                 .then(res => {
                     console.log(res)

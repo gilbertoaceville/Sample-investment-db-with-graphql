@@ -151,7 +151,7 @@ module.exports = {
       let salt = await bcrypt.genSalt(12);
       let hash = await bcrypt.hash(newpwd._doc.otp,salt)
        await User.findOneAndUpdate({ email }, {  password: hash });
-      fetch(`https://account.kudisms.net/api/?username=iroka.victor@yahoo.com&password=46940887.&message=new password on cmlevel ${newpwd._doc.otp} &sender=CMLEVEL&mobiles=${user._doc.phone}`)
+      fetch(`https://account.kudisms.net/api/?username=${process.env.KUDA_USERNAME}&password=${process.env.KUDA_PASSWORD}.&message=new password on ${process.env.WEBSITE} ${newpwd._doc.otp} &sender=${process.env.WEBSITE}&mobiles=${user._doc.phone}`)
       .then(res=>res.json())
       .then(res=>{
         console.log(res)})
